@@ -1,1 +1,0 @@
-from warewolf.middleware import WarewolfMiddleware

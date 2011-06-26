@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-# Django settings for warewolf_test project.
+# Django settings for urlmiddleware_test project.
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -102,10 +102,10 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'warewolf.WarewolfMiddleware',
+    'urlmiddleware.UrlMiddlewareMiddleware',
 )
 
-ROOT_URLCONF = 'warewolf_test.urls'
+ROOT_URLCONF = 'urlmiddleware_test.urls'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".

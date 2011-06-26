@@ -1,0 +1,15 @@
+rawr
+==========
+
+.. contents::
+
+.. toctree::
+   :maxdepth: 1
+
+.. comment: split here
+
+Intro
+------------------
+
+A simple Django app that allows you to use a url based definition for adding
+middleware to a project. This means you don't need to add it globally.
