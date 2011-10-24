@@ -28,7 +28,7 @@ middleware::
     MIDDLEWARE_CLASSES = (
         # ...
         # add urlmiddleware after all other middleware.
-        'urlmiddleware.UrlMiddlewareMiddleware',
+        'urlmiddleware.middleware.UrlMiddlewareMiddleware',
     )
 
 Start adding middleware to your project in your url.py files below your normal

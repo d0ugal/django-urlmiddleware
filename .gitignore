@@ -6,6 +6,5 @@ MANIFEST
 *.pyc
 *.egg-info
 .coverage
-tests/fixtures/test_video.mp4
-tests/fixtures/test_video.ogv
-tests/fixtures/test_video.webm
+*.egg
+Vagrantfile
