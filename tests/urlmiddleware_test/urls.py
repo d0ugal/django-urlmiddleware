@@ -19,6 +19,6 @@ urlpatterns = patterns('',
 from urlmiddleware_test.middleware import LoginRequiredMiddleware
 
 middlewarepatterns = patterns('',
-	url(r'^accounts/', LoginRequiredMiddleware),
-	url(r'^accounts/', LoginRequiredMiddleware),
+    url(r'^accounts/', LoginRequiredMiddleware),
+    url(r'^accounts/', LoginRequiredMiddleware),
 )

@@ -1,4 +1,13 @@
+from django.utils.functional import memoize
+
 from urlmiddleware.urlresolvers import resolve
+
+_match_cache = {}
+
+
+def get_matched_middleware(path):
+    return resolve(path)
+memoize(get_matched_middleware, _match_cache, 1)
 
 
 class UrlMiddlewareMiddleware(object):
@@ -12,11 +21,7 @@ class UrlMiddlewareMiddleware(object):
         self._cache = {}
 
     def get_matched_middleware(self, path):
-        if path in self._cache:
-            return self._cache[path]
-
-        self._cache[path] = resolve(path)
-        return self._cache[path]
+        return get_matched_middleware(path)
 
     def process_request(self, request, *args, **kwargs):
         matched_middleware = self.get_matched_middleware(request.path)
