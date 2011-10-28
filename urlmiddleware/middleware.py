@@ -10,7 +10,7 @@ def get_matched_middleware(path):
 memoize(get_matched_middleware, _match_cache, 1)
 
 
-class UrlMiddlewareMiddleware(object):
+class URLMiddleware(object):
     """
     To install urlmiddleware, one global middleware class needs to be
     added so it can then act as an entry point and match other middleware

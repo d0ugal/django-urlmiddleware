@@ -50,7 +50,7 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
                         for k, v in sub_match.kwargs.iteritems():
                             sub_match_dict[smart_str(k)] = v
                         middleware = ResolverMatch(sub_match.func, sub_match.args, sub_match_dict, sub_match.url_name, self.app_name or sub_match.app_name, [self.namespace] + sub_match.namespaces)
-                        found.append(middleware())
+                        found.append(middleware.func)
                     tried.append([pattern])
             if len(found) == 0:
                 raise Resolver404({'tried': tried, 'path': new_path})
