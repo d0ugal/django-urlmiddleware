@@ -156,3 +156,142 @@ class MiddlewareTestCase(TestCase):
 
             expected_content = "New Process View Response"
             self.assertEquals(m.process_view(request, lambda x: None, [], {}).content, expected_content)
+
+    def test_process_template_resnpose_no_op(self):
+
+        from django.template.response import TemplateResponse
+
+        from urlmiddleware import URLMiddleware
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_template_response(self, request, response):
+                return response
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        request = self.factory.get('/foo/bar/')
+        template_response = TemplateResponse(request, 'base.html')
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+
+            self.assertEquals(m.process_template_response(request, template_response), template_response)
+
+    def test_process_template_resnpose(self):
+
+        from django.template.response import TemplateResponse
+
+        from urlmiddleware import URLMiddleware
+
+        request = self.factory.get('/foo/bar/')
+        template_response = TemplateResponse(request, 'base.html')
+        new = TemplateResponse(request, 'base.html')
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_template_response(self, request, response):
+                return new
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+
+            self.assertEquals(m.process_template_response(request, template_response), new)
+
+    def test_process_response_no_op(self):
+
+        from django.http import HttpResponse
+
+        from urlmiddleware import URLMiddleware
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_response(self, request, response):
+                return response
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        request = self.factory.get('/foo/bar/')
+        response = HttpResponse("Response")
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+
+            self.assertEquals(m.process_response(request, response), response)
+
+    def test_process_response(self):
+
+        from django.http import HttpResponse
+
+        from urlmiddleware import URLMiddleware
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_response(self, request, response):
+                from django.http import HttpResponse
+                return HttpResponse("New Response")
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        request = self.factory.get('/foo/bar/')
+        response = HttpResponse("Response")
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+            expected_content = "New Response"
+            self.assertEquals(m.process_response(request, response).content, expected_content)
+
+    def test_process_exception_no_op(self):
+
+        from urlmiddleware import URLMiddleware
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_exception(self, request, exception):
+                pass
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        request = self.factory.get('/foo/bar/')
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+            e = Exception("Uh oh.")
+
+            self.assertEquals(m.process_exception(request, e), None)
+
+    def test_process_exception(self):
+
+        from urlmiddleware import URLMiddleware
+
+        class MyTemplateResnponseViewMiddleware(object):
+
+            def process_exception(self, request, exception):
+                from django.http import HttpResponse
+                return HttpResponse("New Response")
+
+        def mock_match(self, path):
+            return [MyTemplateResnponseViewMiddleware(), ]
+
+        request = self.factory.get('/foo/bar/')
+
+        with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
+
+            m = URLMiddleware()
+            e = Exception("Uh oh.")
+
+            expected_content = "New Response"
+            self.assertEquals(m.process_exception(request, e).content, expected_content)
+
