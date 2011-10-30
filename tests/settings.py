@@ -6,7 +6,12 @@ sys.path.append("%s/.." % TEST_DIR)
 
 COMPRESS_CACHE_BACKEND = 'locmem://'
 
-DATABASE_ENGINE = 'sqlite3'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+    }
+}
 
 INSTALLED_APPS = (
     'django_coverage',
@@ -24,3 +29,5 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'test_urlmiddleware.urls'
 
 COVERAGE_ADDITIONAL_MODULES = ['urlmiddleware', ]
+COVERAGE_CODE_EXCLUDES = []
+COVERAGE_MODULE_EXCLUDES = []

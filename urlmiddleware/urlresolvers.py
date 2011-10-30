@@ -4,6 +4,7 @@ from django.core.urlresolvers import RegexURLResolver, ResolverMatch, Resolver40
 from django.utils.encoding import smart_str
 from django.utils.functional import memoize
 
+from urlmiddleware.util.collections import OrderedSet
 
 _resolver_cache = {}
 _urlconfs = local()
@@ -30,7 +31,7 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
 
     def resolve(self, path):
         tried = []
-        found = []
+        found = OrderedSet()
         match = self.regex.search(path)
         if match:
             new_path = path[match.end():]
@@ -50,13 +51,13 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
                         for k, v in sub_match.kwargs.iteritems():
                             sub_match_dict[smart_str(k)] = v
                         middleware = ResolverMatch(sub_match.func, sub_match.args, sub_match_dict, sub_match.url_name, self.app_name or sub_match.app_name, [self.namespace] + sub_match.namespaces)
-                        found.append(middleware.func)
+                        found.add(middleware.func)
                     tried.append([pattern])
             if len(found) == 0:
                 raise Resolver404({'tried': tried, 'path': new_path})
         if len(found) == 0:
             raise Resolver404({'path': path})
-        return found
+        return list(found)
 
 
 def get_resolver(urlconf):
