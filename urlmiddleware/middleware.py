@@ -1,13 +1,14 @@
+from django.utils.datastructures import SortedDict
 from django.utils.functional import memoize
 
 from urlmiddleware.urlresolvers import resolve
 
-_match_cache = {}
+_match_cache = SortedDict()
 
 
-def get_matched_middleware(path):
+def matched_middleware(path):
     return resolve(path)
-memoize(get_matched_middleware, _match_cache, 1)
+memoize(matched_middleware, _match_cache, 1)
 
 
 class URLMiddleware(object):
@@ -17,25 +18,22 @@ class URLMiddleware(object):
     classes.
     """
 
-    def __init__(self):
-        self._cache = {}
-
     def get_matched_middleware(self, path):
-        return get_matched_middleware(path)
+        return [m() for m in matched_middleware(path)]
 
-    def process_request(self, request, *args, **kwargs):
+    def process_request(self, request):
         matched_middleware = self.get_matched_middleware(request.path)
         for middleware in matched_middleware:
             if hasattr(middleware, 'process_request'):
-                response = middleware.process_request(request, *args, **kwargs)
+                response = middleware.process_request(request)
                 if response:
                     return response
 
-    def process_view(self, request, *args, **kwargs):
+    def process_view(self, request, view_func, view_args, view_kwargs):
         matched_middleware = self.get_matched_middleware(request.path)
         for middleware in matched_middleware:
             if hasattr(middleware, 'process_view'):
-                response = middleware.process_view(request, *args, **kwargs)
+                response = middleware.process_view(request, view_func, view_args, view_kwargs)
                 if response:
                     return response
 
@@ -53,10 +51,10 @@ class URLMiddleware(object):
                 response = middleware.process_response(request, response)
         return response
 
-    def process_exception(self, request, *args, **kwargs):
+    def process_exception(self, request, exception):
         matched_middleware = self.get_matched_middleware(request.path)
         for middleware in matched_middleware:
             if hasattr(middleware, 'process_exception'):
-                response = middleware.process_exception(request, *args, **kwargs)
+                response = middleware.process_exception(request, exception)
                 if response:
                     return response
