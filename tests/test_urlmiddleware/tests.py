@@ -58,10 +58,6 @@ class ResolverTestCase(TestCase):
 
 class MiddlewareTestCase(TestCase):
 
-    def setUp(self):
-        # Every test needs access to the request factory.
-        self.factory = RequestFactory()
-
     def test_match_cache(self):
 
         from urlmiddleware.middleware import _match_cache, URLMiddleware
@@ -72,6 +68,23 @@ class MiddlewareTestCase(TestCase):
         m.get_matched_middleware('/')
 
         self.assertEqual(_match_cache.keys(), ['/', ])
+
+    def test_getting_matched(self):
+
+        from urlmiddleware import URLMiddleware
+        from test_urlmiddleware.middleware import NoOpMiddleWare
+
+        m = URLMiddleware()
+        middleware = m.get_matched_middleware("/")
+
+        self.assertEquals(middleware[0].__class__, NoOpMiddleWare)
+
+
+class MiddlewareHooksTestCase(TestCase):
+
+    def setUp(self):
+        # Every test needs access to the request factory.
+        self.factory = RequestFactory()
 
     def test_process_request_no_op(self):
 
