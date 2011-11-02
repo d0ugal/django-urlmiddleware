@@ -2,6 +2,14 @@ Changelog
 =========
 
 
+v0.2.1
+--------
+
+Major bugfix release
+
+- Fixed an issue with the caching that prevented it from being used.
+
+
 v0.2.0
 --------
 
