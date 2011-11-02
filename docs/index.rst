@@ -66,3 +66,12 @@ Then in your urls.py file::
     )
 
 Done!
+
+
+Contents
+========
+
+.. toctree::
+ :maxdepth: 1
+
+ changelog
