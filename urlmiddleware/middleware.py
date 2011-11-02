@@ -8,7 +8,7 @@ _match_cache = SortedDict()
 
 def matched_middleware(path):
     return resolve(path)
-memoize(matched_middleware, _match_cache, 1)
+matched_middleware = memoize(matched_middleware, _match_cache, 1)
 
 
 class URLMiddleware(object):
