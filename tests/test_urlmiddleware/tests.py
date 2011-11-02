@@ -28,20 +28,29 @@ class ResolverTestCase(TestCase):
     def test_dotted_middleware_path(self):
 
         from urlmiddleware.urlresolvers import resolve
-        from test_urlmiddleware.middleware import NoOpMiddleWare, NoOpMiddleWare2
+        from test_urlmiddleware.middleware import NoOpMiddleWare3, NoOpMiddleWare4
 
         middleware = resolve('/dotted/')
 
-        self.assertEquals([NoOpMiddleWare, NoOpMiddleWare2, ], middleware)
+        self.assertEquals([NoOpMiddleWare3, NoOpMiddleWare4, ], middleware)
 
     def test_duplicated_middleware(self):
 
         from urlmiddleware.urlresolvers import resolve
-        from test_urlmiddleware.middleware import NoOpMiddleWare
+        from test_urlmiddleware.middleware import NoOpMiddleWare5
 
         middleware = resolve('/dupe/')
 
-        self.assertEquals([NoOpMiddleWare, ], middleware)
+        self.assertEquals([NoOpMiddleWare5, ], middleware)
+
+    def test_dotted_sub_path(self):
+
+        from urlmiddleware.urlresolvers import resolve
+        from test_urlmiddleware.middleware import NoOpMiddleWare6
+
+        middleware = resolve('/dotted2/')
+
+        self.assertEquals([NoOpMiddleWare6, ], middleware)
 
     def test_no_middleware_Action(self):
 
@@ -308,3 +317,18 @@ class MiddlewareHooksTestCase(TestCase):
             expected_content = "New Response"
             self.assertEquals(m.process_exception(request, e).content, expected_content)
 
+
+class MiddlewareRegexURLResolverTestCase(TestCase):
+
+    def test_type_match(self):
+
+        from urlmiddleware.urlresolvers import MiddlewareRegexURLResolver
+
+        resolver = MiddlewareRegexURLResolver(r'^/', 'test_urlmiddleware.urls_fake')
+
+        with self.assertRaises(ImportError):
+            resolver.url_patterns
+
+        resolver = MiddlewareRegexURLResolver(r'^/', 'test_urlmiddleware.urls_empty')
+
+        self.assertEquals(resolver.url_patterns, ())
