@@ -58,17 +58,6 @@ class ResolverTestCase(TestCase):
 
 class MiddlewareTestCase(TestCase):
 
-    def test_match_cache(self):
-
-        from urlmiddleware.middleware import _match_cache, URLMiddleware
-
-        self.assertEqual(_match_cache.keys(), [])
-
-        m = URLMiddleware()
-        m.get_matched_middleware('/')
-
-        self.assertEqual(_match_cache.keys(), ['/', ])
-
     def test_getting_matched(self):
 
         from urlmiddleware import URLMiddleware
@@ -78,6 +67,21 @@ class MiddlewareTestCase(TestCase):
         middleware = m.get_matched_middleware("/")
 
         self.assertEquals(middleware[0].__class__, NoOpMiddleWare)
+
+
+class MatchingCacheTestCase(TestCase):
+
+    def test_match_cache(self):
+
+        from urlmiddleware.middleware import _match_cache, URLMiddleware
+        from test_urlmiddleware.middleware import NoOpMiddleWare
+
+        self.assertEqual(_match_cache, {})
+
+        m = URLMiddleware()
+        m.get_matched_middleware('/')
+
+        self.assertEqual(_match_cache, {('/',): [NoOpMiddleWare, ], })
 
 
 class MiddlewareHooksTestCase(TestCase):
