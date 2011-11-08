@@ -13,9 +13,9 @@ middlewarepatterns = patterns('',
     url(r'^sub/$', NoOpMiddleWare),
     url(r'^sub/$', NoOpMiddleWare2),
     url(r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare3'),
-    url(r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare4'),
+    (r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare4'),
     url(r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
-    url(r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
+    (r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
 )
 
 middlewarepatterns += patterns('test_urlmiddleware.middleware',
