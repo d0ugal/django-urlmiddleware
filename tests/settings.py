@@ -20,6 +20,7 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_DIRS = (
+    'django.template.loaders.app_directories.Loader',
 )
 
 MIDDLEWARE_CLASSES = (

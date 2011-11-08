@@ -77,6 +77,15 @@ class MiddlewareTestCase(TestCase):
 
         self.assertEquals(middleware[0].__class__, NoOpMiddleWare)
 
+    def test_no_middleware_url(self):
+
+        from urlmiddleware import URLMiddleware
+
+        m = URLMiddleware()
+        middleware = m.get_matched_middleware("/no_middleware/")
+
+        self.assertEquals(middleware, [])
+
 
 class MatchingCacheTestCase(TestCase):
 
@@ -328,6 +337,7 @@ class MiddlewareRegexURLResolverTestCase(TestCase):
     def test_type_match(self):
 
         from urlmiddleware.urlresolvers import MiddlewareRegexURLResolver
+        from django.core.exceptions import ImproperlyConfigured
 
         resolver = MiddlewareRegexURLResolver(r'^/', 'test_urlmiddleware.urls_fake')
 
@@ -336,4 +346,32 @@ class MiddlewareRegexURLResolverTestCase(TestCase):
 
         resolver = MiddlewareRegexURLResolver(r'^/', 'test_urlmiddleware.urls_empty')
 
-        self.assertEquals(resolver.url_patterns, ())
+        with self.assertRaises(ImproperlyConfigured):
+            resolver.url_patterns
+
+
+class IncludeMiddleware(TestCase):
+
+    def test_include(self):
+
+        from urlmiddleware.base import MiddlewareResolver404
+        from urlmiddleware.urlresolvers import resolve
+
+        with self.assertRaises(MiddlewareResolver404):
+            print resolve('/include_test/')
+
+    def test_include_views(self):
+
+        from django.core.exceptions import ImproperlyConfigured
+        from urlmiddleware.urlresolvers import resolve
+
+        with self.assertRaises(ImproperlyConfigured):
+            print resolve('/include_views_test/')
+
+    def test_include_get(self):
+
+        c = Client()
+
+        response = c.get('/include_test/')
+
+        self.assertEqual(404, response.status_code)

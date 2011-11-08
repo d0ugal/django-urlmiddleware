@@ -1,6 +1,9 @@
+from inspect import isclass, isfunction
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
 from django.utils.functional import memoize
 
+from urlmiddleware.base import MiddlewareResolver404
 from urlmiddleware.urlresolvers import resolve
 
 _match_cache = SortedDict()
@@ -19,7 +22,24 @@ class URLMiddleware(object):
     """
 
     def get_matched_middleware(self, path):
-        return [m() for m in matched_middleware(path)]
+
+        middleware_instances = []
+
+        try:
+            middleware_matches = matched_middleware(path)
+        except MiddlewareResolver404:
+            return []
+
+        for middleware_class in middleware_matches:
+            if not (isclass(middleware_class) or isfunction(middleware_class) \
+                    or callable(middleware_class)):
+                raise ImproperlyConfigured("%s is expected to be a callable that accepts no arguements." % middleware_class)
+            try:
+                middleware_instances.append(middleware_class())
+            except TypeError:
+                raise ImproperlyConfigured("%s is expected to be a callable that accepts no arguements." % middleware_class)
+
+        return middleware_instances
 
     def process_request(self, request):
         matched_middleware = self.get_matched_middleware(request.path)

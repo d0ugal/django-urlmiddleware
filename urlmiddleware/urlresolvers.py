@@ -1,13 +1,19 @@
 from threading import local
 
-from django.core.urlresolvers import RegexURLResolver, ResolverMatch, Resolver404
+from django.core.exceptions import ImproperlyConfigured
+from django.core.urlresolvers import RegexURLResolver, RegexURLPattern, ResolverMatch
 from django.utils.encoding import smart_str
 from django.utils.functional import memoize
 
+from urlmiddleware.base import MiddlewareResolver404
 from urlmiddleware.util.collections import OrderedSet
 
 _resolver_cache = {}
 _urlconfs = local()
+
+
+class MiddlewareRegexURLPattern(RegexURLPattern):
+    pass
 
 
 class MiddlewareRegexURLResolver(RegexURLResolver):
@@ -26,7 +32,7 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
         try:
             iter(patterns)
         except TypeError:
-            patterns = ()
+            raise ImproperlyConfigured("The included urlconf %s doesn't have any middlewarepatterns in it" % self.urlconf_name)
         return patterns
 
     def resolve(self, path):
@@ -38,7 +44,7 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
             for pattern in self.url_patterns:
                 try:
                     sub_match = pattern.resolve(new_path)
-                except Resolver404, e:
+                except MiddlewareResolver404, e:
                     sub_tried = e.args[0].get('tried')
                     if sub_tried is not None:
                         tried.extend([[pattern] + t for t in sub_tried])
@@ -54,9 +60,9 @@ class MiddlewareRegexURLResolver(RegexURLResolver):
                         found.add(middleware.func)
                     tried.append([pattern])
             if len(found) == 0:
-                raise Resolver404({'tried': tried, 'path': new_path})
+                raise MiddlewareResolver404({'tried': tried, 'path': new_path})
         if len(found) == 0:
-            raise Resolver404({'path': path})
+            raise MiddlewareResolver404({'path': path})
         return list(found)
 
 
