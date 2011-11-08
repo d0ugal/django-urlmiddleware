@@ -85,12 +85,13 @@ class MatchingCacheTestCase(TestCase):
         from urlmiddleware.middleware import _match_cache, URLMiddleware
         from test_urlmiddleware.middleware import NoOpMiddleWare
 
-        self.assertEqual(_match_cache, {})
+        keys = _match_cache.keys()[:] + [('/',), ]
 
         m = URLMiddleware()
         m.get_matched_middleware('/')
 
-        self.assertEqual(_match_cache, {('/',): [NoOpMiddleWare, ], })
+        self.assertEqual(_match_cache.keys(), keys)
+        self.assertEqual(_match_cache[('/',)], [NoOpMiddleWare, ])
 
 
 class MiddlewareHooksTestCase(TestCase):
