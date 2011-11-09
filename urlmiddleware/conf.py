@@ -2,21 +2,21 @@ from django.core.exceptions import ImproperlyConfigured
 
 from urlmiddleware.urlresolvers import MiddlewareRegexURLResolver, MiddlewareRegexURLPattern
 
-__all__ = ['mpatterns', 'murl', ]
+__all__ = ['mpatterns', 'middleware', ]
 
 
 def mpatterns(prefix, *args):
     pattern_list = []
     for t in args:
         if isinstance(t, (list, tuple)):
-            t = murl(prefix=prefix, *t)
+            t = middleware(prefix=prefix, *t)
         elif isinstance(t, MiddlewareRegexURLPattern):
             t.add_prefix(prefix)
         pattern_list.append(t)
     return pattern_list
 
 
-def murl(regex, view, kwargs=None, name=None, prefix=''):
+def middleware(regex, view, kwargs=None, name=None, prefix=''):
     if isinstance(view, (list, tuple)):
         # For include(...) processing.
         urlconf_module, app_name, namespace = view
