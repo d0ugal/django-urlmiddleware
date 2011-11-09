@@ -115,11 +115,11 @@ setup(
     package_data=find_package_data('urlmiddleware', only_in_packages=False),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
+        'Framework :: Django',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.5',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Topic :: Internet :: WWW/HTTP',
