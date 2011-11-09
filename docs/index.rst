@@ -77,6 +77,12 @@ noting thatyou can also add it in the same way you would add views. For example
 
 And then you should be done.
 
+Requirements
+============
+The only requirement for urlmiddleware is Django >= 1.3. It may be possible to
+use it with lesser versions of Django but testing and development is carried out
+of 1.3 and above.
+
 Contents
 ========
 
