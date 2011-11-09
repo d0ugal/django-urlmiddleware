@@ -14,7 +14,6 @@ DATABASES = {
 }
 
 INSTALLED_APPS = (
-    'django_coverage',
     'urlmiddleware',
     'test_urlmiddleware',
 )
