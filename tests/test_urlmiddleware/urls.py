@@ -1,23 +1,31 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns, url, include
+from django.views.generic import TemplateView
+
+from urlmiddleware.conf import middleware, mpatterns
 
 from test_urlmiddleware.middleware import NoOpMiddleWare, NoOpMiddleWare2
 
-urlpatterns = patterns('django.views.generic.simple',
-    url(r'^$', 'direct_to_template', {'template': 'base.html'}),
-    url(r'^accounts/$', 'direct_to_template', {'template': 'base.html'}),
+
+urlpatterns = patterns('',
+    url(r'^$', TemplateView.as_view(template_name='base.html')),
+    url(r'^accounts/$', TemplateView.as_view(template_name='base.html')),
+    url(r'^no_middleware/$', TemplateView.as_view(template_name='base.html')),
 )
 
 
-middlewarepatterns = patterns('',
-    url(r'^$', NoOpMiddleWare),
-    url(r'^sub/$', NoOpMiddleWare),
-    url(r'^sub/$', NoOpMiddleWare2),
-    url(r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare3'),
+middlewarepatterns = mpatterns('',
+    middleware(r'^$', NoOpMiddleWare),
+    middleware(r'^sub/$', NoOpMiddleWare),
+    middleware(r'^sub/$', NoOpMiddleWare2),
+    middleware(r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare3'),
     (r'^dotted/$', 'test_urlmiddleware.middleware.NoOpMiddleWare4'),
-    url(r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
+    middleware(r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
     (r'^dupe/$', 'test_urlmiddleware.middleware.NoOpMiddleWare5'),
+    middleware(r'^include_test/', include('test_urlmiddleware.urls_include')),
+    (r'^include_test/', include('test_urlmiddleware.urls_include')),
+    middleware(r'^include_views_test/', include('test_urlmiddleware.urls_empty')),
 )
 
-middlewarepatterns += patterns('test_urlmiddleware.middleware',
-    url(r'^dotted2/$', 'NoOpMiddleWare6'),
+middlewarepatterns += mpatterns('test_urlmiddleware.middleware',
+    middleware(r'^dotted2/$', 'NoOpMiddleWare6'),
 )
