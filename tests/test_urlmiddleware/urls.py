@@ -1,14 +1,15 @@
 from django.conf.urls.defaults import patterns, url, include
+from django.views.generic import TemplateView
 
 from urlmiddleware.conf import middleware, mpatterns
 
 from test_urlmiddleware.middleware import NoOpMiddleWare, NoOpMiddleWare2
 
 
-urlpatterns = patterns('django.views.generic.simple',
-    url(r'^$', 'direct_to_template', {'template': 'base.html'}),
-    url(r'^accounts/$', 'direct_to_template', {'template': 'base.html'}),
-    url(r'^no_middleware/$', 'direct_to_template', {'template': 'base.html'}),
+urlpatterns = patterns('',
+    url(r'^$', TemplateView.as_view(template_name='base.html')),
+    url(r'^accounts/$', TemplateView.as_view(template_name='base.html')),
+    url(r'^no_middleware/$', TemplateView.as_view(template_name='base.html')),
 )
 
 
