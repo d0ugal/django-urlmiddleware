@@ -1,5 +1,5 @@
 -r requirements.txt
-django_coverage
 coverage
 django>=1.3
 mock
+tox
