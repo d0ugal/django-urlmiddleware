@@ -38,8 +38,10 @@ for url based middleware::
 Once you have registered the middleware class, you can start adding middleware
 to your project in your urls.py files alongside your normal url definitions::
 
-    middlewarepatterns = patterns('',
-        url(r'^myapp/', MyMiddleWareClass),
+    from urlmiddleware.conf import middleware, mpatterns
+
+    middlewarepatterns = mpatterns('',
+        middleware(r'^myapp/', MyMiddleWareClass),
     )
 
 A common example usecase is adding a login required restriction on a while site
@@ -65,10 +67,11 @@ LoginRequiredMiddleware::
 
 Then you can add it to your urls.py file just like you would with a view.
 
+    from urlmiddleware.conf import middleware, mpatterns
     from myapp.middleware import LoginRequiredMiddleware
 
-    middlewarepatterns = patterns('',
-        url(r'^accounts/', LoginRequiredMiddleware),
+    middlewarepatterns = mpatterns('',
+        middleware(r'^accounts/', LoginRequiredMiddleware),
     )
 
 That example shows the middleware being imported into urls.py but its worth
