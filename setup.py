@@ -103,7 +103,7 @@ def find_package_data(
 
 
 setup(
-    name="urlmiddleware",
+    name="django-urlmiddleware",
     version=":versiontools:urlmiddleware:",
     url='http://urlmiddleware.readthedocs.org/',
     license='MIT',

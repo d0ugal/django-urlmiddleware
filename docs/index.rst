@@ -23,7 +23,7 @@ Quick Start
 
 Install urlmiddleware::
 
-    pip install urlmiddleware
+    pip install django-urlmiddleware
 
 There is no need to add urlmiddlewware to your installed apps, however, you do
 need to register one global middleware class that will act as the entry point
