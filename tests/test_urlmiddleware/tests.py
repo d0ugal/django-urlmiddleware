@@ -118,7 +118,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_request(self, request, *args, **kwargs):
                 pass
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyProcessRequestMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -139,7 +139,7 @@ class MiddlewareHooksTestCase(TestCase):
                 from django.http import HttpResponse
                 return HttpResponse("New Process Request Response")
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyProcessRequestMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -160,7 +160,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_view(self, request, view, view_args, view_kwargs):
                 pass
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyProcessViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -181,7 +181,7 @@ class MiddlewareHooksTestCase(TestCase):
                 from django.http import HttpResponse
                 return HttpResponse("New Process View Response")
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyProcessViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -204,7 +204,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_template_response(self, request, response):
                 return response
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -231,7 +231,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_template_response(self, request, response):
                 return new
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         with patch.object(URLMiddleware, 'get_matched_middleware', mock_match):
@@ -251,7 +251,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_response(self, request, response):
                 return response
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -275,7 +275,7 @@ class MiddlewareHooksTestCase(TestCase):
                 from django.http import HttpResponse
                 return HttpResponse("New Response")
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -296,7 +296,7 @@ class MiddlewareHooksTestCase(TestCase):
             def process_exception(self, request, exception):
                 pass
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')
@@ -318,7 +318,7 @@ class MiddlewareHooksTestCase(TestCase):
                 from django.http import HttpResponse
                 return HttpResponse("New Response")
 
-        def mock_match(self, path):
+        def mock_match(self, path, middleware_method=None):
             return [MyTemplateResnponseViewMiddleware(), ]
 
         request = self.factory.get('/foo/bar/')

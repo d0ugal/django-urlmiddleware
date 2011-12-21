@@ -21,7 +21,7 @@ class URLMiddleware(object):
     classes.
     """
 
-    def get_matched_middleware(self, path):
+    def get_matched_middleware(self, path, middleware_method=None):
 
         middleware_instances = []
 
@@ -31,50 +31,57 @@ class URLMiddleware(object):
             return []
 
         for middleware_class in middleware_matches:
-            if not (isclass(middleware_class) or isfunction(middleware_class) \
+            invalid_error = "%s is expected to be a callable that accepts" \
+                "no arguements." % middleware_class
+            if not (isclass(middleware_class) or isfunction(middleware_class)\
                     or callable(middleware_class)):
-                raise ImproperlyConfigured("%s is expected to be a callable that accepts no arguements." % middleware_class)
+                raise ImproperlyConfigured(invalid_error)
             try:
-                middleware_instances.append(middleware_class())
+                mw_instance = middleware_class()
+                if middleware_method and not hasattr(mw_instance,
+                    middleware_method):
+                    continue
+                middleware_instances.append(mw_instance)
             except TypeError:
-                raise ImproperlyConfigured("%s is expected to be a callable that accepts no arguements." % middleware_class)
+                raise ImproperlyConfigured(invalid_error)
 
         return middleware_instances
 
     def process_request(self, request):
-        matched_middleware = self.get_matched_middleware(request.path)
+        matched_middleware = self.get_matched_middleware(request.path,
+            'process_request')
         for middleware in matched_middleware:
-            if hasattr(middleware, 'process_request'):
-                response = middleware.process_request(request)
-                if response:
-                    return response
+            response = middleware.process_request(request)
+            if response:
+                return response
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        matched_middleware = self.get_matched_middleware(request.path)
+        matched_middleware = self.get_matched_middleware(request.path,
+            'process_view')
         for middleware in matched_middleware:
-            if hasattr(middleware, 'process_view'):
-                response = middleware.process_view(request, view_func, view_args, view_kwargs)
-                if response:
-                    return response
+            response = middleware.process_view(request, view_func, view_args,
+                view_kwargs)
+            if response:
+                return response
 
     def process_template_response(self, request, response):
-        matched_middleware = self.get_matched_middleware(request.path)
+        matched_middleware = self.get_matched_middleware(request.path,
+            'process_template_response')
         for middleware in matched_middleware:
-            if hasattr(middleware, 'process_template_response'):
-                response = middleware.process_template_response(request, response)
+            response = middleware.process_template_response(request, response)
         return response
 
     def process_response(self, request, response):
-        matched_middleware = self.get_matched_middleware(request.path)
+        matched_middleware = self.get_matched_middleware(request.path,
+            'process_response')
         for middleware in matched_middleware:
-            if hasattr(middleware, 'process_response'):
-                response = middleware.process_response(request, response)
+            response = middleware.process_response(request, response)
         return response
 
     def process_exception(self, request, exception):
-        matched_middleware = self.get_matched_middleware(request.path)
+        matched_middleware = self.get_matched_middleware(request.path,
+            'process_exception')
         for middleware in matched_middleware:
-            if hasattr(middleware, 'process_exception'):
-                response = middleware.process_exception(request, exception)
-                if response:
-                    return response
+            response = middleware.process_exception(request, exception)
+            if response:
+                return response
