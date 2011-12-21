@@ -375,3 +375,24 @@ class IncludeMiddleware(TestCase):
         response = c.get('/include_test/')
 
         self.assertEqual(404, response.status_code)
+
+
+class UrlConfTestCase(TestCase):
+
+    def test_middleware_func(self):
+
+        from urlmiddleware.conf import middleware, ImproperlyConfigured
+
+        with self.assertRaises(ImproperlyConfigured):
+            middleware(r'', '', prefix="prefix")
+
+        middleware(r'', 'name', prefix="prefix")
+
+    def test_invalid_middleware_object(self):
+
+        from urlmiddleware.conf import ImproperlyConfigured
+
+        c = Client()
+
+        with self.assertRaises(ImproperlyConfigured):
+            c.get('/invalid/')

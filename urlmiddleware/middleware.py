@@ -1,4 +1,3 @@
-from inspect import isclass, isfunction
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.datastructures import SortedDict
 from django.utils.functional import memoize
@@ -31,19 +30,14 @@ class URLMiddleware(object):
             return []
 
         for middleware_class in middleware_matches:
-            invalid_error = "%s is expected to be a callable that accepts" \
-                "no arguements." % middleware_class
-            if not (isclass(middleware_class) or isfunction(middleware_class)\
-                    or callable(middleware_class)):
-                raise ImproperlyConfigured(invalid_error)
-            try:
-                mw_instance = middleware_class()
-                if middleware_method and not hasattr(mw_instance,
-                    middleware_method):
-                    continue
-                middleware_instances.append(mw_instance)
-            except TypeError:
-                raise ImproperlyConfigured(invalid_error)
+
+            if not callable(middleware_class):
+                raise ImproperlyConfigured("%s is expected to be a callable that accepts no arguements." % middleware_class)
+
+            mw_instance = middleware_class()
+            if middleware_method and not hasattr(mw_instance, middleware_method):
+                continue
+            middleware_instances.append(mw_instance)
 
         return middleware_instances
 

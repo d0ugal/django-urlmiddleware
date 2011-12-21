@@ -29,3 +29,7 @@ middlewarepatterns = mpatterns('',
 middlewarepatterns += mpatterns('test_urlmiddleware.middleware',
     middleware(r'^dotted2/$', 'NoOpMiddleWare6'),
 )
+
+middlewarepatterns += mpatterns('',
+    middleware(r'^invalid/$', 'NotARealThing'),
+)
