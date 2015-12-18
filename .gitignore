@@ -7,5 +7,6 @@ MANIFEST
 *.egg-info
 .coverage
 *.egg
+*.eggs
 Vagrantfile
 tests/.tox/
